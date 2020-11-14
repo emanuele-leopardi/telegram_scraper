@@ -30,9 +30,9 @@ logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s'
 
 
 class Channel():
-    '''
+    """
     This class holds only the needed channel's infos
-    '''
+    """
 
     def __init__(self, dialog):
         self.id = dialog.id
@@ -44,11 +44,11 @@ class Channel():
 
 
 async def createChannelList():
-    '''
+    """
     This function simply crete the list of channels
     amogts the one available on your chat list
     It does not scrape chats or groups.
-    '''
+    """
     async for dialog in client.iter_dialogs():
         if dialog.is_channel and dialog.name != forward_channel:
             channelList.append(Channel(dialog))
@@ -56,19 +56,19 @@ async def createChannelList():
 
 
 async def getForwardEntityId(forward_channel):
-    '''
+    """
     This function simply crete the list of channels
     amogts the one available on your chat list
     It does not scrape chats or groups.
-    '''
+    """
     async for dialog in client.iter_dialogs():
         if dialog.name == forward_channel:
             return dialog.entity.id
 
 async def getItemList():
-    '''
+    """
     This function returns the item list
-    '''
+    """
     itemList = []
     try:
         with open(os.path.join(path + '/' + file_list), 'r') as file:
@@ -80,9 +80,9 @@ async def getItemList():
     return itemList
 
 async def markAllAsRead(channelList):
-    '''
+    """
     Marks all new messages as read, who cares, right?
-    '''
+    """
     for channel in channelList:
         if channel.unread_count > 0:
             async for mexs in client.iter_messages(
@@ -93,11 +93,11 @@ async def markAllAsRead(channelList):
 
 
 async def createSearchList(item):
-    '''
+    """
     This function create the list of items you want to
     be notified about and writes/reads them to/from a
     file
-    '''
+    """
     itemList = []
     if os.path.exists(os.path.join(path + '/' + file_list)):
         itemList = await getItemList()
@@ -118,10 +118,10 @@ async def createSearchList(item):
 
 
 async def searchItems(itemList, channelList, limit=100000):
-    '''
+    """
     Research of all items in all channels since _days_ before
 
-    '''
+    """
     # Retrive messages that are already being forwarded to the
     # _forward_channel_
     messagesList = await getMessages()
@@ -158,10 +158,10 @@ async def searchItems(itemList, channelList, limit=100000):
 
 
 async def getMessages():
-    '''
+    """
     This function creates a list of all existing messages in the _forward_channel
     and returns it in the format "channel_id|channel_post"
-    '''
+    """
     Messages = []
     async for dialog in client.iter_dialogs():
         if dialog.name == forward_channel:
@@ -189,11 +189,11 @@ async def getMessages():
 
 @client.on(events.NewMessage)
 async def handler(event):
-    '''
+    """
     This function handles incoming new messages and
     checks if any of them contains matching 
     item 
-    '''
+    """
     # Refresh Item List from file only
     itemList = await getItemList()
     if '/help' in event.raw_text:
@@ -206,21 +206,21 @@ async def handler(event):
                           '/getChannelList'
                           )
     if '/addItem' in event.raw_text:
-        '''
+        """
         When an Item is added:
         - it gets written to the file_list file
         - a full serch gets executed against all channels
 
-        '''
+        """
         await event.reply('Adding item ' + event.raw_text.split('/addItem')[1].strip())
         itemList = await createSearchList(event.raw_text.split('/addItem')[1].strip())
         await searchItems([event.raw_text.split('/addItem')[1].strip()], channelList)
     if '/deleteItem' in event.raw_text:
-        '''
+        """
         When an Item gets delete:
         - it gets removed from the file_list file
         - it gets removed from itemList list
-        '''
+        """
         del_item = event.raw_text.split('/deleteItem')[1].strip()
         if del_item in itemList:
             itemList.remove(del_item)
