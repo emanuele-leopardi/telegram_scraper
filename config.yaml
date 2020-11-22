@@ -9,5 +9,6 @@ config:
   #token:  'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
   # days before today to be scraped.
   days_to_scrape: 1
-  forward_channel: programma_emanuele
+  forward_channel:
+    - programma_emanuele
   session: emanuele #name that the .session file will have
